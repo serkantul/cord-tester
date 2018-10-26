@@ -2,10 +2,10 @@
     "VOLTDeviceInfo" : [
     {
             "device_type": "openolt",
-            "host": "10.90.0.114",
+            "host": "10.1.50.19",
             "port": 9191,
-            "switch_datapath_id": "of:0000000000000001",
-            "switch_port": "1",
+            "switch_datapath_id": "of:0000cc37abeacefa",
+            "switch_port": "49",
             "outer_tpid": "0x8100",
             "name": "ONF OLT",
             "uplink": "65536",

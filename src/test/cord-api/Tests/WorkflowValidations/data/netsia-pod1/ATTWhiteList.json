@@ -1,8 +1,8 @@
 {
     "AttWhiteListInfo" : [
     {
-            "serial_number": "ALPHe3d1cfde",
-            "device_id" : "of:000000000a5a0072",
+            "serial_number": "ALPHe3d1cdea",
+            "device_id" : "of:000000000a013213",
             "pon_port_id" : 536870912,
             "owner_id" : "1"
     }
