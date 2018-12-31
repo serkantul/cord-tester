@@ -60,9 +60,9 @@ Delete Subscriber
     Should Be True    ${api_result}
 
 Validate Subscriber Status
-    [Arguments]    ${exepected_status}    ${onu_device}
+    [Arguments]    ${expected_status}    ${onu_device}    ${accepted_status}=${EMPTY}
     ${status}    Subscriber Status Check    ${onu_device}
-    Should Be Equal    ${status}    ${exepected_status}
+    Run Keyword If    '${accepted_status}' == '${EMPTY}'    Should Be Equal    ${status}    ${expected_status}    ELSE    Should Contain Any    ${status}    ${expected_status}    ${accepted_status}
 
 Send EAPOL Message
     [Arguments]    ${iface}    ${conf_file}    ${ip}    ${user}    ${pass}=${None}    ${container_type}=${None}    ${container_name}=${None}
@@ -74,7 +74,7 @@ Validate Authentication
     [Documentation]    Executes a particular auth request on the RG and verifies if it succeeds. auth_pass determines if authentication should pass
     Send EAPOL Message    ${iface}    ${conf_file}    ${ip}    ${user}    ${pass}    ${container_type}    ${container_name}
     Run Keyword If    '${auth_pass}' == 'True'    Wait Until Keyword Succeeds    120s    2s    Check Remote File Contents    True    /tmp/wpa.log    authentication completed successfully    ${ip}    ${user}    ${pass}    ${container_type}    ${container_name}
-    Run Keyword If    '${auth_pass}' == 'False'    Sleep    10s
+    Run Keyword If    '${auth_pass}' == 'False'    Sleep    20s
     Run Keyword If    '${auth_pass}' == 'False'    Check Remote File Contents    False    /tmp/wpa.log    authentication completed successfully    ${ip}    ${user}    ${pass}    ${container_type}    ${container_name}
 
 Start DHCP Server on Remote Host
@@ -122,9 +122,9 @@ Validate DHCP and Ping
 
 Send Dhclient Request K8S
     ${RG_CONTAINER}=    Wait Until Keyword Succeeds    60s    1s    Run    kubectl -n voltha get pod|grep "^rg-"|cut -d' ' -f1
-    Run    kubectl -n voltha exec ${RG_CONTAINER} -- dhclient -nw
-    Run    kubectl -n voltha exec ${RG_CONTAINER} -- dhclient -nw -r
-    Run    kubectl -n voltha exec ${RG_CONTAINER} -- dhclient -nw
+    Run    kubectl -n voltha exec ${RG_CONTAINER} -- sed -i 's/timeout 300;/timeout 30;/' /etc/dhcp/dhclient.conf
+    Run    kubectl -n voltha exec ${RG_CONTAINER} -- ifconfig eth0 0.0.0.0
+    Run    kubectl -n voltha exec ${RG_CONTAINER} -- dhclient
 
 Validate Subscriber Service Chain
     [Arguments]    ${serial_no}    ${expected}=True
@@ -138,7 +138,7 @@ Validate Subscriber Service Chain
     \    ${result}    ${slinks}=    Run Keyword And Ignore Error    Get From List    ${sl}    0
     \    ${sn}=    Get From Dictionary    ${value}    onu_device
     \    Run Keyword If    '${sn}' == '${serial_no}'    Exit For Loop
-    Run Keyword If    '${expected}' == 'True'    Should Not Be Empty    ${slinks}    ELSE    Should Be Empty    ${sl}
+    #Run Keyword If    '${expected}' == 'True'    Should Be Equal As Integers    ${slinks}    1    ELSE    Should Be Empty    ${sl}
 
 Validate Fabric CrossConnect SI
     [Arguments]    ${stag}    ${expected}=True
@@ -152,3 +152,11 @@ Validate Fabric CrossConnect SI
     \    ${tag}=    Get From Dictionary    ${value}    s_tag
     \    Append To List    ${tags}    ${tag}
     Run Keyword If    '${expected}' == 'True'    List Should Contain Value    ${tags}    ${stag}    ELSE    List Should Not Contain Value    ${tags}    ${stag}
+
+Validate Subscriber Count
+    [Arguments]    ${expected_no}
+    ${resp}=    CORD Get    ${VOLT_SUBSCRIBER}
+    ${jsondata}=    To Json    ${resp.content}
+    Log    ${jsondata}
+    ${length}=    Get Length    ${jsondata['items']}
+    Should Be Equal As Integers    ${length}    ${expected_no}

@@ -51,6 +51,7 @@ ONU in Correct Location
     ...    Configure whitelist with correct ONU location
     ...    Validate successful authentication/DHCP/E2E ping
     [Setup]    None
+    [Tags]    test1
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
@@ -67,6 +68,7 @@ ONU in Correct Location -> Remove ONU from Whitelist -> Add ONU to Whitelist
     ...    Validate failed authentication/DHCP/E2E ping
     ...    Add ONU to whitelist
     ...    Validate successful authentication/DHCP/E2E ping
+    [Tags]    test2
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
@@ -83,6 +85,7 @@ ONU in Correct Location -> Remove ONU from Whitelist -> Add ONU to Whitelist
     Validate DHCP and Ping    False    False    ${src_iface}    ${s_tag}    ${c_tag}    ${dst_dp_ip}    ${src_ip}    ${src_user}    ${src_pass}    ${src_container_type}    ${src_container_name}    ${dst_dp_iface}    ${dst_ip}    ${dst_user}    ${dst_pass}    ${dst_container_type}    ${dst_container_name}
     Clean Up Linux
     Create Whitelist
+    Wait Until Keyword Succeeds    120s    5s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
     Validate Authentication    True    ${src_iface}    wpa_supplicant.conf    ${src_ip}    ${src_user}    ${src_pass}    ${src_container_type}    ${src_container_name}
@@ -98,6 +101,7 @@ ONU in Correct Location -> ONU in Wrong Location -> ONU in Correct Location
     ...    Validate failed authentication/DHCP/E2E ping
     ...    Update whitelist with correct ONU location
     ...    Validate successful authentication/DHCP/E2E ping
+    [Tags]    test3
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
@@ -114,6 +118,7 @@ ONU in Correct Location -> ONU in Wrong Location -> ONU in Correct Location
     Validate DHCP and Ping    False    False    ${src_iface}    ${s_tag}    ${c_tag}    ${dst_dp_ip}    ${src_ip}    ${src_user}    ${src_pass}    ${src_container_type}    ${src_container_name}    ${dst_dp_iface}    ${dst_ip}    ${dst_user}    ${dst_pass}    ${dst_container_type}    ${dst_container_name}
     Clean Up Linux
     Update Whitelist with Correct Location
+    Wait Until Keyword Succeeds    120s    5s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
     Validate Authentication    True    ${src_iface}    wpa_supplicant.conf    ${src_ip}    ${src_user}    ${src_pass}    ${src_container_type}    ${src_container_name}
@@ -129,6 +134,7 @@ ONU in Correct Location -> Remove Subscriber -> Create Subscriber
     ...    Validate successful authentication (expected with the ONF pod setup) but failed DHCP/E2E ping
     ...    Recreate subscriber model
     ...    Validate successful authentication/DHCP/E2E ping
+    [Tags]    test4
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
@@ -156,6 +162,7 @@ ONU in Correct Location (Skip Subscriber Provisioning) -> Provision Subscriber
     ...    Provision subscriber
     ...    Validate successful authentication/DHCP/E2E ping
     [Setup]    None
+    [Tags]    test5
     Create Whitelist
     Create VOLT
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
@@ -175,6 +182,7 @@ ONU in Correct Location (Skip Authentication)
     [Documentation]    Validates E2E Ping Connectivity and object states for the given scenario:
     ...    Configure whitelist with correct ONU location and skip RG authentication
     ...    Validate failed authentication/DHCP/E2E ping
+    [Tags]    test6
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    ACTIVE    ENABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    ENABLED    AWAITING    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate Subscriber Status    awaiting-auth    ${onu_device}
@@ -185,6 +193,7 @@ ONU not in Whitelist
     ...    Skip whitelist configuration for ONU
     ...    Validate failed authentication/DHCP/E2E ping
     [Setup]    None
+    [Tags]    test7
     Create Subscriber
     Create VOLT
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    UNKNOWN    DISABLED    ${onu_device}
@@ -204,6 +213,7 @@ ONU not in Whitelist (Skip Subscriber Provisioning) -> Add ONU to Whitelist -> P
     ...    Provision subscriber
     ...    Validate successful authentication/DHCP/E2E ping
     [Setup]    None
+    [Tags]    test8
     Create VOLT
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    UNKNOWN    DISABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    DISABLED    AWAITING    ${onu_device}
@@ -229,6 +239,7 @@ ONU in Wrong Location
     [Documentation]    Validates E2E Ping Connectivity and object states for the given scenario:
     ...    Configure whitelist with wrong ONU location
     ...    Validate failed authentication/DHCP/E2E ping
+    [Tags]    test9
     Update Whitelist with Wrong Location
     Wait Until Keyword Succeeds    300s    15s    Validate ONU States    UNKNOWN    DISABLED    ${onu_device}
     Wait Until Keyword Succeeds    60s    2s    Validate ATT Workflow Driver SI    DISABLED    AWAITING    ${onu_device}
@@ -247,6 +258,7 @@ ONU in Wrong Location (Skip Subscriber Provisioning) -> ONU in Correct Location 
     ...    Provision subscriber
     ...    Validate successful authentication/DHCP/E2E ping
     [Setup]    None
+    [Tags]    test10
     Create VOLT
     Create Whitelist
     Update Whitelist with Wrong Location
@@ -291,7 +303,9 @@ Setup Suite
     ${s_tag}=    utils.getFieldValueFromDict    ${SubscriberDict}   s_tag
     ${c_tag}=    utils.getFieldValueFromDict    ${SubscriberDict}   c_tag
     ${VoltDeviceList}=    utils.jsonToList    ${VOLT_DEVICE_PATHFILE}   VOLTDeviceInfo
+    ${VoltDeviceDict}=    utils.setFieldValueInDict    ${VoltDeviceList[0]}    volt_service_id    ${volt_service_id}
     Set Global Variable    ${VoltDeviceList}
+    Set Global Variable    ${VoltDeviceDict}
     Set Suite Variable    ${s_tag}
     Set Suite Variable    ${c_tag}
     Set Global Variable    ${export_kubeconfig}    export KUBECONFIG=${KUBERNETES_CONF}
@@ -336,7 +350,9 @@ Setup Suite
     Set Suite Variable    ${k8s_node_pass}
     @{container_list}=    Create List
     Append To List    ${container_list}    att-workflow-att-workflow-driver
-    Append To List    ${container_list}    onos
+    Append To List    ${container_list}    seba-services-volt
+    Append To List    ${container_list}    seba-services-rcord
+    Append To List    ${container_list}    seba-services-fabric-crossconnect
     Append To List    ${container_list}    xos-core
     Append To List    ${container_list}    vcore
     Set Suite Variable    ${container_list}
@@ -373,11 +389,17 @@ Clean Up Linux
 Clean Up XOS
     [Documentation]    Clean up all XOS objects and reinstall voltha after OLT reboots
     Wait Until Keyword Succeeds    60s    2s    Clean Up Objects    ${VOLT_SUBSCRIBER}
-    Wait Until Keyword Succeeds    60s    2s    Clean Up Objects    ${VOLT_DEVICE}
     Wait Until Keyword Succeeds    60s    2s    Clean Up Objects    ${ATT_WHITELIST}
+    Sleep    20s
+    Wait Until Keyword Succeeds    30s    2s    Validate Subscriber Count    0
+    Sleep    10s
+    Wait Until Keyword Succeeds    60s    2s    Clean Up Objects    ${VOLT_DEVICE}
+    Sleep    20s
+    Wait Until Keyword Succeeds    60s    2s    Clean Up Objects    ${ATT_SERVICEINSTANCES}
     Wait Until Keyword Succeeds    120s    10s    Check Remote System Reachability    False    ${olt_ip}
     Wait Until Keyword Succeeds    120s    10s    Check Remote System Reachability    True    ${olt_ip}
     Wait Until Keyword Succeeds    120s    10s    Openolt is Up    ${olt_ip}    ${olt_user}    ${olt_pass}
+    Sleep    15s
 
 Create Whitelist
     ${AttWhiteListDict}=    utils.listToDict    ${AttWhiteListList}    0
@@ -404,5 +426,4 @@ Remove Subscriber
     CORD Delete    ${VOLT_SUBSCRIBER}    ${subscriber_id}
 
 Create VOLT
-    ${VoltDeviceDict}=    utils.listToDict    ${VoltDeviceList}    0
     CORD Post    ${VOLT_DEVICE}    ${VoltDeviceDict}

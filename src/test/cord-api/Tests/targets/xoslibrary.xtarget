@@ -140,9 +140,11 @@ Generate JSON Data
     ${json_{{ m.name | lower}}_amend_1}=    Set Json Value    ${json_{{ m.name | lower }}_amend_1}    /CellIndividualOffset    "1"
     {% endif %}
     {% if  m.name  == "RCORDSubscriber" -%}
-    ## Create req service owner for rcord subscriber
+    ## Create req service owner for rcord subscriber and
     CORD Post    /xosapi/v1/rcord/rcordservices    {"name": "testrcordservice", "access": "unknown"}
     ${json_{{ m.name | lower}}_1}=    Set Json Value    ${json_{{ m.name | lower }}_1}    /owner_id    ${id}
+    ${rcord_tmp_service_id}=    Set Variable    ${id}
+    Set Suite Variable    ${rcord_tmp_service_id}
     {% endif %}
     {% if  m.name  == "HippieOSSServiceInstance" -%}
     ## Create req service owner for hippie oss service instance
@@ -152,6 +154,10 @@ Generate JSON Data
     {% if  m.name  == "AddressManagerServiceInstance" -%}
     ${json_{{ m.name | lower}}_1}=    Set Json Value    ${json_{{ m.name | lower }}_1}    /public_ip    "2.2.2.2"
     ${json_{{ m.name | lower}}_amend_1}=    Set Json Value    ${json_{{ m.name | lower }}_amend_1}    /public_ip    "3.3.3.3"
+    {% endif %}
+    {% if  m.name  == "RCORDIpAddress" -%}
+    ${json_{{ m.name | lower}}_1}=    Set Json Value    ${json_{{ m.name | lower }}_1}    /ip    "2.2.2.2"
+    ${json_{{ m.name | lower}}_amend_1}=    Set Json Value    ${json_{{ m.name | lower }}_amend_1}    /ip    "3.3.3.3"
     {% endif %}
     ${json_{{ m.name | lower }}_1}=     To JSON    ${json_{{ m.name | lower }}_1}
     ${json_{{ m.name | lower }}_amend_1}=     To JSON    ${json_{{ m.name | lower }}_amend_1}
@@ -223,6 +229,9 @@ Create {{ m.name }}
     {% endif -%}
     {% if  m.name  == "Network" -%}
     ${json_{{ m.name | lower}}_tmp}=    Set Json Value    ${json_{{ m.name | lower }}_tmp}    /permit_all_slices    true
+    {% endif %}
+    {% if  m.name  == "RCORDSubscriber" -%}
+    ${json_{{ m.name | lower}}_tmp}=    Set Json Value    ${json_{{ m.name | lower }}_tmp}    /owner_id    ${rcord_tmp_service_id}
     {% endif %}
     ${json_{{ m.name | lower}}_tmp}=    Set Json Value    ${json_{{ m.name | lower }}_tmp}    /no_policy    true
     ${json_{{ m.name | lower}}_tmp}=    Set Json Value    ${json_{{ m.name | lower }}_tmp}    /no_sync    true    
