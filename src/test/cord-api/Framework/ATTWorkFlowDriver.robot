@@ -32,7 +32,18 @@ Service Instance Status Check
     ${getJsonDict}=    utils.getDictFromListOfDict    ${json_result_list}    serial_number    ${onu_device}
     ${onu_state}=  Get From Dictionary    ${getJsonDict}   onu_state
     ${authentication_state}=  Get From Dictionary    ${getJsonDict}   authentication_state
-    [Return]    ${onu_state}    ${authentication_state}
+    ${status_message}=  Get From Dictionary    ${getJsonDict}   status_message
+    [Return]    ${onu_state}    ${authentication_state}    ${status_message}
+
+Service Instance DHCP State Check
+    [Arguments]    ${onu_device}
+    [Documentation]    Returns dhcp state value from att work flow driver for a particular ONU device
+    ${json_result}=    restApi.ApiGet    ATT_SERVICEINSTANCES
+    Log    ${json_result}
+    ${json_result_list}=    Get From dictionary    ${json_result}    items
+    ${getJsonDict}=    utils.getDictFromListOfDict    ${json_result_list}    serial_number    ${onu_device}
+    ${state}=  Get From Dictionary    ${getJsonDict}   dhcp_state
+    [Return]    ${state}
 
 Create Whitelist Entry
     [Arguments]    ${entry_list}    ${list_index}
@@ -72,7 +83,13 @@ Delete Whitelist Entry
     Should Be True    ${api_result}
 
 Validate ATT Workflow Driver SI
-    [Arguments]    ${expected_status}    ${expected_auth_status}    ${onu_device}
-    ${onu_state}   ${authentication_status}   Service Instance Status Check    ${onu_device}
+    [Arguments]    ${expected_status}    ${expected_auth_status}    ${onu_device}    ${expected_status_message}=${EMPTY}
+    ${onu_state}   ${authentication_status}   ${status_message}    Service Instance Status Check    ${onu_device}
     Should Be Equal    ${onu_state}    ${expected_status}
     Should Be Equal    ${authentication_status}    ${expected_auth_status}
+    Run Keyword If    '${expected_status_message}' != '${EMPTY}'    Should Be Equal    ${status_message}    ${expected_status_message}
+
+Validate ATT Workflow Driver SI DHCP State
+    [Arguments]    ${expected_status}    ${onu_device}
+    ${dhcp_state}=   Service Instance DHCP State Check    ${onu_device}
+    Should Be Equal    ${dhcp_state}    ${expected_status}
